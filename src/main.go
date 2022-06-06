@@ -1,56 +1,39 @@
 package main
 
 import (
-    "image"
-    "image/draw"
-    "image/png"
     "image/color"
-    "os"
-    "bufio"
-    "bytes"
-    "log"
-	"fmt"
-	"time"
+    "time"
+	"log"
 )
 
+func get_ray_color(ray Ray) color.RGBA { // fix this / refactor
+	unit_dir := unit_vector(ray.Direction)
+	t := 0.5 * (unit_dir.Y + 1.0)
+	c := add_vectors(multiply_vector(Vector3{X:1.0, Y:1.0, Z:1.0}, (1.0-t)), multiply_vector(Vector3{X:0.5, Y:0.7, Z:1.0}, t))
+
+	return color.RGBA{R:uint8(255*c.X), G:uint8(255*c.Y), B:uint8(255*c.Z), A:255}
+}
+
 func main() {
-	width := 1280
-	height := 720
+	camera := create_camera(Vector3{X:0, Y:0, Z:0}, 1280, 720)
+	img := create_image(1280, 720)
+	start := time.Now()
 
-    target := image.NewRGBA(image.Rect(0, 0, width, height))
-    draw.Draw(target, target.Bounds(), image.White, image.ZP, draw.Src)
+	for i := 0; i<=int(camera.Width); i++ {
+		for j := 0; j<=int(camera.Height); j++ {
+			u := float64(i)/(camera.Width-1)
+			v := float64(j)/(camera.Height-1)
 
-	radius := 200
-	x := width/2
-	y := height/2
+			origin := Point3{X:0, Y:0, Z:0}
+			direction := substract_vectors(add_vectors(camera.LowerLeftCorner, add_vectors(multiply_vector(camera.Horizontal, u), multiply_vector(camera.Vertical, v))), camera.Origin)
+			ray := Ray{Origin:origin, Direction:direction, Scalar:0} // refactor these lines
 
-	// placeholder code, not actual ray tracing yet.
-	for i := 0; i<=width; i++ {
-		for j := 0; j<=height; j++ {
-			if (i-x)*(i-x) + (j-y)*(j-y) <= radius*radius {
-				target.Set(i, j, color.RGBA{240, 70, 123, 255})
-			} else {
-				target.SetRGBA(i, j, color.RGBA{105, 207, 255, 255})
-			}
+			set_pixel(img, i, j, get_ray_color(ray))
 		}
 	}
 
-	enc := png.Encoder{
-		CompressionLevel: png.NoCompression,
-	}
+	elapsed := time.Since(start)
+    log.Printf("\033[32mRendering took %s\033[97m", elapsed)
 
-    var imageBuf bytes.Buffer
-    err := enc.Encode(&imageBuf, target)
-    if err != nil {
-        log.Panic(err)
-    }
-
-	filename := fmt.Sprintf("%v.png", time.Now().Format("02-01-2006"))
-    fo, err := os.Create(filename)
-    if err != nil {
-        panic(err)
-    }
-    fw := bufio.NewWriter(fo)
-
-    fw.Write(imageBuf.Bytes())
+	write_image(img)
 }

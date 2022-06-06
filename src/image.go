@@ -18,21 +18,21 @@ type Image struct {
 	Height int
 }
 
-func create_image(width int, height int) Image {
+func create_image(width float64, height float64) Image {
 	var img Image
 
-	img.Width = width
-	img.Height = height
-	img.Target = image.NewRGBA(image.Rect(0, 0, width, height))
+	img.Width = int(width)
+	img.Height = int(height)
+	img.Target = image.NewRGBA(image.Rect(0, 0, int(width), int(height)))
 
 	return img
 }
 
-func set_pixel(img Image, x int, y int, color color.RGBA) {
+func (img *Image) SetPixel(x int, y int, color color.RGBA) {
 	img.Target.SetRGBA(x, y, color)
 }
 
-func write_image(img Image) {
+func (img *Image) Write() {
 	enc := png.Encoder{
 		CompressionLevel: png.NoCompression,
 	}

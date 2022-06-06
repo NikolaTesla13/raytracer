@@ -16,7 +16,7 @@ type Camera struct {
 	LowerLeftCorner Vector3
 }
 
-func create_camera(origin Vector3, width float64, height float64) Camera {
+func create_camera(origin Point3, width float64, height float64) Camera {
 	var cam Camera
 
 	cam.Width = width
@@ -30,7 +30,19 @@ func create_camera(origin Vector3, width float64, height float64) Camera {
 	cam.Origin = origin
 	cam.Horizontal = Vector3{X:cam.ViewportWidth, Y:0, Z:0}
 	cam.Vertical = Vector3{X:0, Y:cam.ViewportHeight, Z:0}
-	cam.LowerLeftCorner = substract_vectors(substract_vectors(origin, add_vectors(divide_vector(cam.Horizontal, 2), divide_vector(cam.Vertical, 2))), Vector3{X:0, Y:0, Z:cam.FocalLength});
+
+	cam.LowerLeftCorner = vectors_substract(vectors_substract(origin, vectors_add(cam.Horizontal.Divide(2), cam.Vertical.Divide(2))), Vector3{X:0, Y:0, Z:cam.FocalLength})
 
 	return cam
+}
+
+func (cam *Camera) GetCoords(i int, j int) (float64, float64) {
+	u := float64(i)/(cam.Width-1)
+	v := float64(j)/(cam.Height-1)
+
+	return u, v
+}
+
+func (cam *Camera) GetDirection(u float64, v float64) Vector3 {
+	return vectors_substract(vectors_add(cam.LowerLeftCorner, vectors_add(cam.Horizontal.Multiply(u), cam.Vertical.Multiply(v))), cam.Origin)
 }

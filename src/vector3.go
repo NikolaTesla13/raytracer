@@ -84,3 +84,15 @@ func (v Vector3) Unit() Vector3 {
 
     return result
 }
+
+func (v Vector3) LengthSquared() float64 {
+    return v.X * v.X + v.Y * v.Y + v.Z * v.Z;
+}
+
+func dot(v1 Vector3, v2 Vector3) float64 {
+    return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z; 
+}
+
+func cross(v1 Vector3, v2 Vector3) Vector3 {
+    return Vector3{X:v1.Y*v2.Z-v1.Z*v2.Y, Y:v1.Z*v2.X-v1.X*v2.Z, Z:v1.X*v2.Y-v1.Y*v2.X};
+}

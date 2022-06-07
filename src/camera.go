@@ -46,3 +46,11 @@ func (cam *Camera) GetCoords(i int, j int) (float64, float64) {
 func (cam *Camera) GetDirection(u float64, v float64) Vector3 {
 	return vectors_substract(vectors_add(cam.LowerLeftCorner, vectors_add(cam.Horizontal.Multiply(u), cam.Vertical.Multiply(v))), cam.Origin)
 }
+
+func (cam *Camera) GetWidth() int {
+	return int(cam.Width)
+}
+
+func (cam *Camera) GetHeight() int {
+	return int(cam.Height)
+}

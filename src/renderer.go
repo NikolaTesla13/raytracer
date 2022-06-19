@@ -13,7 +13,7 @@ func (renderer *Renderer) Prepare() {
 	renderer.Wg.Add(renderer.Cam.GetWidth()/renderer.ThreadsCount+1)
 }
 
-func (renderer *Renderer) Render() {
+func (renderer *Renderer) Render(world []Sphere) {
 	for i := 0; i<=renderer.Cam.GetWidth(); i+=renderer.ThreadsCount {
 		go func(i int, camera *Camera, img *Image) {
 			defer renderer.Wg.Done()
@@ -25,7 +25,7 @@ func (renderer *Renderer) Render() {
 					direction := camera.GetDirection(u, v)
 					ray := Ray{Origin:camera.Origin, Direction:direction, Scalar:0}
 				
-					img.SetPixel(i+k, j, get_ray_color(&ray))
+					img.SetPixel(i+k, j, get_ray_color(&ray, world))
 				}	
 			}
 		}(i, &renderer.Cam, &renderer.Img)

@@ -2,6 +2,7 @@ package main
 
 import (
     "image/color"
+    "math"
 )
 
 func point_at(ray *Ray, scalar float64) Point3 { 
@@ -10,14 +11,22 @@ func point_at(ray *Ray, scalar float64) Point3 {
     return vectors_add(ray.Origin, ray.Direction.Multiply(ray.Scalar))
 }
 
-func get_ray_color(ray *Ray) color.RGBA {
-    sphere := Sphere{Center:Point3{X:0, Y:0, Z:-1}, Radius:0.5}
-    var hit_record HitRecord
-
-    if sphere.hit(ray, 0.0, 1.0, &hit_record) {
-        c := Vector3{X:hit_record.Normal.X+1, Y:hit_record.Normal.Y+1, Z:hit_record.Normal.Z+1}.Multiply(0.5)
-    	return color.RGBA{R:uint8(255*c.X), G:uint8(255*c.Y), B:uint8(255*c.Z), A:255}
+func get_ray_color(ray *Ray, world []Sphere) color.RGBA {
+  var hit_record HitRecord
+  did_it_hit := false
+  closest_so_far := math.Inf(1)
+  
+  for i := 0; i < len(world); i++ {
+    if world[i].hit(ray, 0, closest_so_far, &hit_record) {
+      did_it_hit = true
+      closest_so_far = hit_record.T;
     }
+  }
+
+  if did_it_hit {
+    c := Vector3{X:hit_record.Normal.X+1, Y:hit_record.Normal.Y+1, Z:hit_record.Normal.Z+1}.Multiply(0.5)
+    return color.RGBA{R:uint8(255*c.X), G:uint8(255*c.Y), B:uint8(255*c.Z), A:255}
+  }
 
 	unit_dir := ray.Direction.Unit()
 	t := 0.5 * (unit_dir.Y + 1.0)

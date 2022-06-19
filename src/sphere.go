@@ -8,7 +8,7 @@ type Sphere struct {
 }
 
 func (sphere *Sphere) hit(ray *Ray, t_min float64, t_max float64, rec *HitRecord) bool {
-	oc := vectors_substract(ray.Origin, sphere.Center)
+  oc := vectors_substract(ray.Origin, sphere.Center)
 
     a := ray.Direction.LengthSquared()
     half_b := dot(oc, ray.Direction)

@@ -137,3 +137,8 @@ func clamp(x, min, max float64) float64 {
   }
   return x;
 }
+
+func is_near_zero(v *Vector3) bool {
+  s := 1e-8
+  return (math.Abs(v.X) < s) && (math.Abs(v.Y) < s) && (math.Abs(v.Z) < s);
+}

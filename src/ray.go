@@ -27,9 +27,19 @@ func get_ray_color(ray *Ray, world []Sphere, depth int) Vector3 {
   }
 
   if did_it_hit {
-    target := vectors_add(vectors_add(hit_record.Intersec, hit_record.Normal), rand_unit_vec())
-    return vectors_multiply(get_ray_color(&Ray{hit_record.Intersec, vectors_substract(target, hit_record.Intersec), 0}, world, depth-1), hit_record.Albedo);
+    var scattered Ray
+    var attenuation Vector3
+    
+    if hit_record.Mat.scatter(ray, hit_record, &attenuation, &scattered) {
+      return vectors_multiply(get_ray_color(&scattered, world, depth-1), attenuation)
+    }
+    return Vector3{0, 0, 0}
   }
+
+  /*if did_it_hit {
+    target := vectors_add(vectors_add(hit_record.Intersec, hit_record.Normal), rand_unit_vec())
+    return vectors_multiply(get_ray_color(&Ray{hit_record.Intersec, vectors_substract(target, hit_record.Intersec), 0}, world, depth-1), Vector3{0.1, 0.1, 0.1});
+  }*/
 
 	unit_dir := ray.Direction.Unit()
 	t := 0.5 * (unit_dir.Y + 1.0)

@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 type Camera struct {
 	Origin Point3
 
@@ -10,28 +12,36 @@ type Camera struct {
 	ViewportHeight float64
 	ViewportWidth float64
 	FocalLength float64
+  Fov float64
 
 	Horizontal Vector3
 	Vertical Vector3
 	LowerLeftCorner Vector3
 }
 
-func create_camera(origin Point3, width float64, height float64) Camera {
+func create_camera(origin Point3, lookat Point3, fov float64, width float64, height float64) Camera {
 	var cam Camera
 
 	cam.Width = width
 	cam.Height = height
 
+  radians := fov * math.Pi / 90
+  h := math.Tan(radians / 2)
+
 	cam.AspectRatio = float64(width)/float64(height)
-	cam.ViewportHeight = 2.0
+	cam.ViewportHeight = 2.0 * h
 	cam.ViewportWidth = cam.AspectRatio * cam.ViewportHeight
 	cam.FocalLength = 1.0
 
-	cam.Origin = origin
-	cam.Horizontal = Vector3{X:cam.ViewportWidth, Y:0, Z:0}
-	cam.Vertical = Vector3{X:0, Y:cam.ViewportHeight, Z:0}
+  w := vectors_substract(origin, lookat).Unit()
+  u := cross(Vector3{0, 1, 0}, w).Unit()
+  v := cross(w, u)
 
-	cam.LowerLeftCorner = vectors_substract(vectors_substract(origin, vectors_add(cam.Horizontal.Divide(2), cam.Vertical.Divide(2))), Vector3{X:0, Y:0, Z:cam.FocalLength})
+	cam.Origin = origin
+	cam.Horizontal = vectors_multiply(Vector3{X:cam.ViewportWidth, Y:0, Z:0}, u)
+	cam.Vertical = vectors_multiply(Vector3{X:0, Y:cam.ViewportHeight, Z:0}, v)
+
+	cam.LowerLeftCorner = vectors_substract(vectors_substract(origin, vectors_add(cam.Horizontal.Divide(2), cam.Vertical.Divide(2))), w)
 
 	return cam
 }

@@ -124,6 +124,10 @@ func rand_in_unit_sphere() Vector3 {
   }
 }
 
+func rand_unit_vec() Vector3 {
+  return rand_in_unit_sphere().Unit();
+}
+
 func clamp(x, min, max float64) float64 {
   if x < min {
     return min;

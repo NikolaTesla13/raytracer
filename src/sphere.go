@@ -19,7 +19,7 @@ func (sphere *Sphere) hit(ray *Ray, t_min float64, t_max float64, rec *HitRecord
 
 	if discriminant < 0 {
         return false
-    }
+  }
 
 	sqrtd := math.Sqrt(discriminant)
 	root := (-half_b-sqrtd)/a

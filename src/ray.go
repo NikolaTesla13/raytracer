@@ -28,7 +28,7 @@ func get_ray_color(ray *Ray, world []Sphere, depth int) Vector3 {
 
   if did_it_hit {
     target := vectors_add(vectors_add(hit_record.Intersec, hit_record.Normal), rand_in_unit_sphere())
-    return get_ray_color(&Ray{hit_record.Intersec, vectors_substract(target, hit_record.Intersec), 0}, world, depth-1).Multiply(0.5);
+    return vectors_multiply(get_ray_color(&Ray{hit_record.Intersec, vectors_substract(target, hit_record.Intersec), 0}, world, depth-1), hit_record.Albedo);
   }
 
 	unit_dir := ray.Direction.Unit()

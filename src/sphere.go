@@ -5,6 +5,7 @@ import "math"
 type Sphere struct {
 	Center Point3
 	Radius float64
+  Albedo Vector3
 }
 
 func (sphere *Sphere) hit(ray *Ray, t_min float64, t_max float64, rec *HitRecord) bool {
@@ -33,6 +34,7 @@ func (sphere *Sphere) hit(ray *Ray, t_min float64, t_max float64, rec *HitRecord
 	rec.Intersec = point_at(ray, root)
 	outward_normal := vectors_substract(rec.Intersec, sphere.Center).Divide(sphere.Radius)
 	rec.SetFaceNormal(ray, outward_normal)
+  rec.Albedo = sphere.Albedo
 
 	return true
 }

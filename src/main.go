@@ -11,11 +11,11 @@ func main() {
     Sphere{Center:Point3{X:0, Y:-100.5, Z:-1}, Radius:100},
   };
 
-	renderer := Renderer{Cam:camera, Img:image, ThreadsCount:40}
-	renderer.Prepare()
+  renderer := Renderer{Cam:camera, Img:image, ThreadsCount:40, SamplesPerPixel: 100}
 
 	profiler.Start("Rendering")
-	renderer.Render(world)
+	renderer.Prepare()
+  renderer.Render(world)
 	profiler.End("Rendering")
 
 	renderer.Shutdown()

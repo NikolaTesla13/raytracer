@@ -37,8 +37,8 @@ func create_camera(origin Point3, width float64, height float64) Camera {
 }
 
 func (cam *Camera) GetCoords(i int, j int) (float64, float64) {
-	u := float64(i)/(cam.Width-1)
-	v := float64(j)/(cam.Height-1)
+	u := (float64(i)+rand_float(0.0, 1.0))/(cam.Width-1)
+	v := (float64(j)+rand_float(0.0, 1.0))/(cam.Height-1)
 
 	return u, v
 }

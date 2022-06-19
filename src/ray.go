@@ -33,7 +33,7 @@ func get_ray_color(ray *Ray, world []Sphere) color.RGBA {
 
 	white := Vector3{X:1.0, Y:1.0, Z:1.0}
 	blue := Vector3{X:0.5, Y:0.7, Z:1.0}
-	c := vectors_add(white.Multiply(t), blue.Multiply(1.0-t))
+	c := vectors_add(white.Multiply(1.0-t), blue.Multiply(t))
 
 	return color.RGBA{R:uint8(255*c.X), G:uint8(255*c.Y), B:uint8(255*c.Z), A:255}
 }

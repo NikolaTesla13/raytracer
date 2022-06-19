@@ -29,7 +29,7 @@ func create_image(width float64, height float64) Image {
 }
 
 func (img *Image) SetPixel(x int, y int, color color.RGBA) {
-	img.Target.SetRGBA(x, y, color)
+	img.Target.SetRGBA(x, img.Height - y, color)
 }
 
 func (img *Image) Write() {

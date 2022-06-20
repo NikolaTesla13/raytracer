@@ -8,6 +8,7 @@ type Renderer struct {
 	Wg sync.WaitGroup
 	ThreadsCount int
   SamplesPerPixel int
+  MaxDepth int
 }
 
 func (renderer *Renderer) Prepare() {
@@ -27,7 +28,7 @@ func (renderer *Renderer) Render(world []Sphere) {
 		
 					  direction := camera.GetDirection(u, v)
 					  ray := Ray{Origin:camera.Origin, Direction:direction, Scalar:0}
-            pixel_color = vectors_add(pixel_color, get_ray_color(&ray, world, 50))
+            pixel_color = vectors_add(pixel_color, get_ray_color(&ray, world, renderer.MaxDepth))
 				  }
 					img.SetPixel(i+k, j, pixel_color, renderer.SamplesPerPixel)
 				}	

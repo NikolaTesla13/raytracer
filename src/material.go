@@ -2,6 +2,7 @@ package main
 
 type Material interface {
   scatter(r_in *Ray, hit_record HitRecord, attenuation *Vector3, scattered *Ray) bool
+  emit() Vector3 
 }
 
 // diffuse
@@ -21,6 +22,10 @@ func (d *Diffuse) scatter(r_in *Ray, hit_record HitRecord, attenuation *Vector3,
   return true
 }
 
+func (d *Diffuse) emit() Vector3 {
+  return Vector3{0, 0, 0}
+}
+
 // metal
 type Metal struct {
   Albedo Vector3
@@ -36,4 +41,21 @@ func (m *Metal) scatter(r_in *Ray, hit_record HitRecord, attenuation *Vector3, s
   *scattered = Ray{hit_record.Intersec, vectors_add(reflected, rand_in_unit_sphere().Multiply(m.Fuzz)), 0}
   *attenuation = m.Albedo
   return (dot(scattered.Direction, hit_record.Normal) > 0)
+}
+
+func (m *Metal) emit() Vector3 {
+  return Vector3{0, 0, 0}
+}
+
+// light
+type Light struct {
+  Emit Vector3
+}
+
+func (l *Light) scatter(r_in *Ray, hit_record HitRecord, attenuation *Vector3, scattered *Ray) bool {
+  return false
+}
+
+func (l *Light) emit() Vector3 {
+  return l.Emit;
 }
